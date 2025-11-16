@@ -1,0 +1,468 @@
+{
+  "address": "2BqFVR96CLqZ6AHue5FbUCXFk4zdiASaoL97wND53BT3",
+  "metadata": {
+    "name": "solain",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "delete_workout",
+      "discriminator": [
+        195,
+        60,
+        169,
+        145,
+        230,
+        56,
+        12,
+        248
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "workout_author",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "workout"
+          ]
+        },
+        {
+          "name": "workout",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  111,
+                  114,
+                  107,
+                  111,
+                  117,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "workout_author"
+              },
+              {
+                "kind": "arg",
+                "path": "workout_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "workout_id",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_workout",
+      "discriminator": [
+        66,
+        41,
+        231,
+        215,
+        97,
+        122,
+        255,
+        97
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "workout_authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "workout",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  111,
+                  114,
+                  107,
+                  111,
+                  117,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "workout_authority"
+              },
+              {
+                "kind": "arg",
+                "path": "workout_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "workout_id",
+          "type": "u64"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "reps",
+          "type": "u16"
+        },
+        {
+          "name": "sets",
+          "type": "u8"
+        },
+        {
+          "name": "duration_sec",
+          "type": "u32"
+        },
+        {
+          "name": "calories",
+          "type": "u16"
+        },
+        {
+          "name": "difficulty",
+          "type": "u8"
+        },
+        {
+          "name": "category",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "update_workout",
+      "discriminator": [
+        78,
+        105,
+        119,
+        50,
+        106,
+        123,
+        38,
+        203
+      ],
+      "accounts": [
+        {
+          "name": "workout_author",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "workout"
+          ]
+        },
+        {
+          "name": "workout",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  111,
+                  114,
+                  107,
+                  111,
+                  117,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "workout_author"
+              },
+              {
+                "kind": "arg",
+                "path": "workout_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "workout_id",
+          "type": "u64"
+        },
+        {
+          "name": "name",
+          "type": {
+            "option": "string"
+          }
+        },
+        {
+          "name": "reps",
+          "type": {
+            "option": "u16"
+          }
+        },
+        {
+          "name": "sets",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "duration_sec",
+          "type": {
+            "option": "u32"
+          }
+        },
+        {
+          "name": "calories",
+          "type": {
+            "option": "u16"
+          }
+        },
+        {
+          "name": "difficulty",
+          "type": {
+            "option": "u8"
+          }
+        },
+        {
+          "name": "category",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ProgramConfig",
+      "discriminator": [
+        196,
+        210,
+        90,
+        231,
+        144,
+        149,
+        140,
+        63
+      ]
+    },
+    {
+      "name": "Workout",
+      "discriminator": [
+        29,
+        190,
+        142,
+        92,
+        8,
+        18,
+        165,
+        32
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "WorkoutNameTooLong",
+      "msg": "Cannot initialize, workout name too long"
+    },
+    {
+      "code": 6001,
+      "name": "WorkoutCategoryTooLong",
+      "msg": "Cannot initialize, workout category too long"
+    },
+    {
+      "code": 6002,
+      "name": "Unauthorized",
+      "msg": "You are not authorized to modify this workout"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidDifficulty",
+      "msg": "Difficulty should be between 1 and 10"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidWorkoutId",
+      "msg": "Invalid workout ID"
+    }
+  ],
+  "types": [
+    {
+      "name": "ProgramConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "next_workout_id",
+            "type": "u64"
+          },
+          {
+            "name": "total_workouts",
+            "type": "u64"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Workout",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "workout_id",
+            "type": "u64"
+          },
+          {
+            "name": "workout_author",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "reps",
+            "type": "u16"
+          },
+          {
+            "name": "sets",
+            "type": "u8"
+          },
+          {
+            "name": "duration_sec",
+            "type": "u32"
+          },
+          {
+            "name": "calories",
+            "type": "u16"
+          },
+          {
+            "name": "difficulty",
+            "type": "u8"
+          },
+          {
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}
