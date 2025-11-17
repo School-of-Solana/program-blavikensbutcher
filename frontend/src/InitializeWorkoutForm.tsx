@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import * as anchor from "@coral-xyz/anchor";
-import { PublicKey, SystemProgram } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { Buffer } from "buffer";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
+import { initializeWorkoutInstruction } from "@/lib/workoutInstructions";
 
 
 if (typeof window !== "undefined") {
@@ -54,61 +61,28 @@ export default function InitializeWorkoutForm(props: {
       }
 
       const program = new anchor.Program(idl, provider);
+      setStatus("Submitting workout...");
 
-      const [configPda] = PublicKey.findProgramAddressSync(
-        [Buffer.from("config")],
-        program.programId
-      );
-
-      setStatus("Loading config...");
-
-      let configAccount;
-      try {
-        configAccount = await program.account.programConfig.fetch(configPda);
-      } catch (err) {
-        setStatus("Initializing program config...");
-        await program.methods
-          .initialize()
-          .accounts({
-            config: configPda,
-            authority: walletPubkey,
-            systemProgram: SystemProgram.programId,
-          })
-          .rpc();
-        configAccount = await program.account.programConfig.fetch(configPda);
-      }
-
-      const workoutId = configAccount.nextWorkoutId;
-      const workoutIdBn = new anchor.BN(workoutId);
-      const workoutIdBuffer = workoutIdBn.toArrayLike(Buffer, "le", 8);
-
-      const [workoutPda] = PublicKey.findProgramAddressSync(
-        [Buffer.from("workout"), walletPubkey.toBuffer(), workoutIdBuffer],
-        program.programId
-      );
-
-      setStatus("Creating workout...");
-
-      const tx = await program.methods
-        .initializeWorkout(
-          workoutIdBn,
+      const result = await initializeWorkoutInstruction({
+        program,
+        walletPubkey,
+        form: {
           name,
           reps,
           sets,
           duration_sec,
           calories,
           difficulty,
-          category
-        )
-        .accounts({
-          config: configPda,
-          workoutAuthority: walletPubkey,
-          workout: workoutPda,
-          systemProgram: SystemProgram.programId,
-        })
-        .rpc();
+          category,
+        },
+      });
 
-      setStatus(`✅ Workout #${workoutId.toString()} created! Tx: ${tx.substring(0, 8)}...`);
+      setStatus(
+        `✅ Workout #${result.workoutId.toString()} created! Tx: ${result.txSignature.substring(
+          0,
+          8
+        )}...`
+      );
       form.reset();
     } catch (err: any) {
       console.error("Full error:", err);

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import * as anchor from "@coral-xyz/anchor";
-import { PublicKey } from "@solana/web3.js";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +17,10 @@ import {
   WorkoutFormState,
   WorkoutAccountResult,
 } from "./types/workout.types";
+import {
+  updateWorkoutInstruction,
+  deleteWorkoutInstruction,
+} from "@/lib/workoutInstructions";
 
 export default function WorkoutList({
   provider,
@@ -96,22 +99,13 @@ export default function WorkoutList({
     if (!provider || !idl || !walletPubkey || !editingWorkout) return;
     try {
       const program = new anchor.Program(idl, provider);
-      await program.methods
-        .updateWorkout(
-          new anchor.BN(editingWorkout.account.workoutId),
-          form.name || null,
-          form.reps || null,
-          form.sets || null,
-          form.duration_sec || null,
-          form.calories || null,
-          form.difficulty || null,
-          form.category || null
-        )
-        .accounts({
-          workoutAuthor: walletPubkey,
-          workout: editingWorkout.publicKey,
-        })
-        .rpc();
+      await updateWorkoutInstruction({
+        program,
+        walletPubkey,
+        workoutPublicKey: editingWorkout.publicKey,
+        workoutId: editingWorkout.account.workoutId,
+        form,
+      });
       closeEditDialog();
       fetchWorkouts();
     } catch (e) {
@@ -124,17 +118,12 @@ export default function WorkoutList({
 
     try {
       const program = new anchor.Program(idl, provider);
-      await program.methods
-        .deleteWorkout(new anchor.BN(workoutToDelete.account.workoutId))
-        .accounts({
-          config:
-            editingWorkout === null
-              ? workoutToDelete.account.config
-              : editingWorkout.account.config,
-          workoutAuthor: walletPubkey,
-          workout: workoutToDelete.publicKey,
-        })
-        .rpc();
+      await deleteWorkoutInstruction({
+        program,
+        walletPubkey,
+        workoutPublicKey: workoutToDelete.publicKey,
+        workoutId: workoutToDelete.account.workoutId,
+      });
       setShowDeleteConfirm(false);
       setWorkoutToDelete(null);
       fetchWorkouts();
